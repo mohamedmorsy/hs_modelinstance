@@ -1,4 +1,4 @@
-hs_app_template
+hs_ModelInstance
 ===============
 
-Hydroshare app template for Django
+Hydroshare Model Instance resource type for Django
