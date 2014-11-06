@@ -8,39 +8,98 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'GenericResource'
-        db.create_table(u'hs_core_genericresource', (
+        # Adding model 'ModelInstanceResource'
+        db.create_table(u'hs_modelinstance_modelinstanceresource', (
             (u'page_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['pages.Page'], unique=True, primary_key=True)),
+            (u'comments_count', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('content', self.gf('mezzanine.core.fields.RichTextField')()),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'genericresources', to=orm['auth.User'])),
-            ('creator', self.gf('django.db.models.fields.related.ForeignKey')(related_name='creator_of', to=orm['auth.User'])),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'modelinstanceresources', to=orm['auth.User'])),
+            ('creator', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'creator_of_hs_modelinstance_modelinstanceresource', to=orm['auth.User'])),
             ('public', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('frozen', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('do_not_distribute', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('do_not_distribute', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('discoverable', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('published_and_frozen', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('last_changed_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='last_changed', null=True, to=orm['auth.User'])),
-            ('resource_file', self.gf('django.db.models.fields.files.FileField')(max_length=100, null=True, blank=True)),
-            ('resource_url', self.gf('django.db.models.fields.URLField')(max_length=200, null=True, blank=True)),
+            ('last_changed_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'last_changed_hs_modelinstance_modelinstanceresource', null=True, to=orm['auth.User'])),
+            ('short_id', self.gf('django.db.models.fields.CharField')(default='27299744b8bb4c0f83a1ac0a0b314163', max_length=32, db_index=True)),
+            ('doi', self.gf('django.db.models.fields.CharField')(db_index=True, max_length=1024, null=True, blank=True)),
+            ('object_id', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
+            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'], null=True, blank=True)),
+            ('data_format', self.gf('django.db.models.fields.CharField')(default='Zip files', max_length=255, blank=True)),
+            ('related_resources', self.gf('django.db.models.fields.TextField')(default='')),
+            ('spatial_coverage', self.gf('django.db.models.fields.CharField')(default='unknown', max_length=255, blank=True)),
+            ('spatial_resolution', self.gf('django.db.models.fields.CharField')(default='unknown', max_length=255, blank=True)),
+            ('temporal_coverage', self.gf('django.db.models.fields.CharField')(default='unknown', max_length=255, blank=True)),
+            ('temporal_resolution', self.gf('django.db.models.fields.CharField')(default='unknown', max_length=255, blank=True)),
+            ('includes_output', self.gf('django.db.models.fields.CharField')(default=None, max_length=255, blank=True)),
+            ('executed_by', self.gf('django.db.models.fields.CharField')(default='unknown', max_length=255, blank=True)),
         ))
-        db.send_create_signal(u'hs_core', ['GenericResource'])
+        db.send_create_signal(u'hs_modelinstance', ['ModelInstanceResource'])
 
-        # Adding M2M table for field owners on 'GenericResource'
-        m2m_table_name = db.shorten_name(u'hs_core_genericresource_owners')
+        # Adding M2M table for field owners on 'ModelInstanceResource'
+        m2m_table_name = db.shorten_name(u'hs_modelinstance_modelinstanceresource_owners')
         db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('genericresource', models.ForeignKey(orm[u'hs_core.genericresource'], null=False)),
+            ('modelinstanceresource', models.ForeignKey(orm[u'hs_modelinstance.modelinstanceresource'], null=False)),
             ('user', models.ForeignKey(orm[u'auth.user'], null=False))
         ))
-        db.create_unique(m2m_table_name, ['genericresource_id', 'user_id'])
+        db.create_unique(m2m_table_name, ['modelinstanceresource_id', 'user_id'])
+
+        # Adding M2M table for field view_users on 'ModelInstanceResource'
+        m2m_table_name = db.shorten_name(u'hs_modelinstance_modelinstanceresource_view_users')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('modelinstanceresource', models.ForeignKey(orm[u'hs_modelinstance.modelinstanceresource'], null=False)),
+            ('user', models.ForeignKey(orm[u'auth.user'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['modelinstanceresource_id', 'user_id'])
+
+        # Adding M2M table for field view_groups on 'ModelInstanceResource'
+        m2m_table_name = db.shorten_name(u'hs_modelinstance_modelinstanceresource_view_groups')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('modelinstanceresource', models.ForeignKey(orm[u'hs_modelinstance.modelinstanceresource'], null=False)),
+            ('group', models.ForeignKey(orm[u'auth.group'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['modelinstanceresource_id', 'group_id'])
+
+        # Adding M2M table for field edit_users on 'ModelInstanceResource'
+        m2m_table_name = db.shorten_name(u'hs_modelinstance_modelinstanceresource_edit_users')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('modelinstanceresource', models.ForeignKey(orm[u'hs_modelinstance.modelinstanceresource'], null=False)),
+            ('user', models.ForeignKey(orm[u'auth.user'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['modelinstanceresource_id', 'user_id'])
+
+        # Adding M2M table for field edit_groups on 'ModelInstanceResource'
+        m2m_table_name = db.shorten_name(u'hs_modelinstance_modelinstanceresource_edit_groups')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('modelinstanceresource', models.ForeignKey(orm[u'hs_modelinstance.modelinstanceresource'], null=False)),
+            ('group', models.ForeignKey(orm[u'auth.group'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['modelinstanceresource_id', 'group_id'])
 
 
     def backwards(self, orm):
-        # Deleting model 'GenericResource'
-        db.delete_table(u'hs_core_genericresource')
+        # Deleting model 'ModelInstanceResource'
+        db.delete_table(u'hs_modelinstance_modelinstanceresource')
 
-        # Removing M2M table for field owners on 'GenericResource'
-        db.delete_table(db.shorten_name(u'hs_core_genericresource_owners'))
+        # Removing M2M table for field owners on 'ModelInstanceResource'
+        db.delete_table(db.shorten_name(u'hs_modelinstance_modelinstanceresource_owners'))
+
+        # Removing M2M table for field view_users on 'ModelInstanceResource'
+        db.delete_table(db.shorten_name(u'hs_modelinstance_modelinstanceresource_view_users'))
+
+        # Removing M2M table for field view_groups on 'ModelInstanceResource'
+        db.delete_table(db.shorten_name(u'hs_modelinstance_modelinstanceresource_view_groups'))
+
+        # Removing M2M table for field edit_users on 'ModelInstanceResource'
+        db.delete_table(db.shorten_name(u'hs_modelinstance_modelinstanceresource_edit_users'))
+
+        # Removing M2M table for field edit_groups on 'ModelInstanceResource'
+        db.delete_table(db.shorten_name(u'hs_modelinstance_modelinstanceresource_edit_groups'))
 
 
     models = {
@@ -80,21 +139,36 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        u'hs_core.genericresource': {
-            'Meta': {'ordering': "(u'_order',)", 'object_name': 'GenericResource', '_ormbases': [u'pages.Page']},
+        u'hs_modelinstance.modelinstanceresource': {
+            'Meta': {'ordering': "(u'_order',)", 'object_name': 'ModelInstanceResource', '_ormbases': [u'pages.Page']},
+            u'comments_count': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'content': ('mezzanine.core.fields.RichTextField', [], {}),
-            'creator': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'creator_of'", 'to': u"orm['auth.User']"}),
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']", 'null': 'True', 'blank': 'True'}),
+            'creator': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'creator_of_hs_modelinstance_modelinstanceresource'", 'to': u"orm['auth.User']"}),
+            'data_format': ('django.db.models.fields.CharField', [], {'default': "'Zip files'", 'max_length': '255', 'blank': 'True'}),
             'discoverable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'do_not_distribute': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'do_not_distribute': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'doi': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '1024', 'null': 'True', 'blank': 'True'}),
+            'edit_groups': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "u'group_editable_hs_modelinstance_modelinstanceresource'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['auth.Group']"}),
+            'edit_users': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "u'user_editable_hs_modelinstance_modelinstanceresource'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['auth.User']"}),
+            'executed_by': ('django.db.models.fields.CharField', [], {'default': "'unknown'", 'max_length': '255', 'blank': 'True'}),
             'frozen': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_changed_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'last_changed'", 'null': 'True', 'to': u"orm['auth.User']"}),
-            'owners': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'owns'", 'symmetrical': 'False', 'to': u"orm['auth.User']"}),
+            'includes_output': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '255', 'blank': 'True'}),
+            'last_changed_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'last_changed_hs_modelinstance_modelinstanceresource'", 'null': 'True', 'to': u"orm['auth.User']"}),
+            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'owners': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "u'owns_hs_modelinstance_modelinstanceresource'", 'symmetrical': 'False', 'to': u"orm['auth.User']"}),
             u'page_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['pages.Page']", 'unique': 'True', 'primary_key': 'True'}),
             'public': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'published_and_frozen': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'resource_file': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'resource_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'genericresources'", 'to': u"orm['auth.User']"})
+            'related_resources': ('django.db.models.fields.TextField', [], {'default': "''"}),
+            'short_id': ('django.db.models.fields.CharField', [], {'default': "'7b9551af41374d9f839944b7326b597b'", 'max_length': '32', 'db_index': 'True'}),
+            'spatial_coverage': ('django.db.models.fields.CharField', [], {'default': "'unknown'", 'max_length': '255', 'blank': 'True'}),
+            'spatial_resolution': ('django.db.models.fields.CharField', [], {'default': "'unknown'", 'max_length': '255', 'blank': 'True'}),
+            'temporal_coverage': ('django.db.models.fields.CharField', [], {'default': "'unknown'", 'max_length': '255', 'blank': 'True'}),
+            'temporal_resolution': ('django.db.models.fields.CharField', [], {'default': "'unknown'", 'max_length': '255', 'blank': 'True'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'modelinstanceresources'", 'to': u"orm['auth.User']"}),
+            'view_groups': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "u'group_viewable_hs_modelinstance_modelinstanceresource'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['auth.Group']"}),
+            'view_users': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "u'user_viewable_hs_modelinstance_modelinstanceresource'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['auth.User']"})
         },
         u'pages.page': {
             'Meta': {'ordering': "(u'titles',)", 'object_name': 'Page'},
@@ -128,4 +202,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['hs_core']
+    complete_apps = ['hs_modelinstance']
