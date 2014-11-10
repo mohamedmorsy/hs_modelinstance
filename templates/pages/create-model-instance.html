@@ -10,6 +10,207 @@
 
 {% block title %}
 
-    Create a Model Instance Resource
+    Create a ModelInstance Resource
+
+{% endblock %}
+
+{% block main %}
+
+    <h2>Upload files to create a new Resource:</h2>
+
+
+<form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data" action="/hsapi/_internal/create-model-instance/">
+    {% csrf_token %}
+
+
+
+    <section style="width: 100%;height: 200px; margin: auto;padding: 10px;">
+        <div id="drop_zone" style="margin: 1 auto; margin-right: 50px; width:60%;float:left;">
+            <br>
+            Drop files here <br><br><br>
+
+            <input type="file" id="fileBrowse" style="display: none;" />
+            <input type="button" class="btn btn-primary btn-lg" value="Browse for Files" onclick="document.getElementById('fileBrowse').click();" />
+        </div>
+
+        <div>
+            <br>
+            <ul>
+              <li>All of the files you upload here will be grouped together into a "Resource"</li>
+              <li>File size is limited to 4 GB per file</li>
+              <li>Upload resource output files if they are available</li>
+              <li>Once you've added all of your files, you can describe your Resource using the form below</li>
+              <li>Files are private, until you choose to share them</li>
+            </ul>
+        </div>
+    </section>
+
+        <br>
+        <br>
+
+
+
+        <div id="uploaded_files">
+
+            <table id="uploaded_files_table">
+
+            </table>
+
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+ <h2>Describe your Resource with metadata:</h2>
+
+    <p>Use this form to create metadata for your Resource. Be as descriptive as you can since all of this information
+        will show up when your Resource is displayed. You can edit this information later.
+    </p>
+
+  <h3> General Metadata: </h3>
+
+                                    {# DUBLIN CORE METADATA #}
+     <!--title-->
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Title*</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="title" id="title" placeholder="Title">
+    </div>
+  </div>
+
+     <!--description-->
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Description</label>
+    <div class="col-sm-10">
+        <textarea class="form-control" name="abstract" id="abstract" cols="30" rows="10" placeholder="Abstract"></textarea>
+    </div>
+  </div>
+
+     <!--creators-->
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Creators*</label>
+    <div class="col-sm-10" id="creators_group">
+      <input type="text" class="form-control" name="creators" id="creators" placeholder="Creators" >
+    </div>
+  </div>
+
+     <!--contributors-->
+   <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Contributors*</label>
+    <div class="col-sm-10" id="contributors_group">
+      <input type="text" class="form-control" name="contributors" id="contributors" placeholder="Contributors" >
+    </div>
+   </div>
+
+     <!--subject keywords-->
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Subject Keywords</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="keywords" name='keywords' placeholder="Keywords">
+    </div>
+  </div>
+
+                                   {# MODEL PROGRAM METADATA #}
+    <br>
+    <hr/>
+    <br>
+
+  <h3>  Instance Metadata: </h3>
+
+     <!--Input/Output data format-->
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Data Format</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" name="data_format" id="data_format"placeholder="Input/Output Data Format">
+    </div>
+  </div>
+
+     <!--Related resources-->
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Related Resources</label>
+    <div class="col-sm-10">
+        <textarea class="form-control" name="related_resources" id="related_resources" cols="30" rows="10" placeholder="Notes about any resources related to Model Instance (e.g. published papers)"></textarea>
+    </div>
+  </div>
+
+     <!--Spatial coverage-->
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Spatial Coverage</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="spatial_coverage" id="spatial_coverage" placeholder="The spatial coverage could be point or box format">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+        <p>Note: Apply one of the following formats for spatial coverage: </p>
+        <ul>
+          <li>Point: east=-78.425; north=38.1633; elevation=111.252; units=degree; zunits=meter ; projection=NAD83; name=USGS02032640</li>
+          <li>Box: northlimit=39.5; eastlimit=-75.125; southlimit=36.5; westlimit=-83.75; uplimit=1746.199; downlimit=289.56; units=degree; zunits=meter; projection=NAD83; name=State of Virginia</li>
+        </ul>
+    </div>
+  </div>
+
+     <!--Spatial coverage resolution-->
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Spatial Resolution</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="spatial_resolution" id="spatial_resolution" placeholder="Spatial coverage resolution">
+    </div>
+  </div>
+
+    <!--Temporal coverage-->
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Temporal Coverage</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="temporal_coverage" id="temporal_coverage" placeholder="Temporal coverage">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+        <p>Note: Apply the following format for temporal coverage: </p>
+        <ul>
+          <li>Starting date, Ending date, Time step</li>
+        </ul>
+    </div>
+  </div>
+
+    <!--Temporal coverage resolution-->
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Temporal Resolution</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="temporal_resolution" id="temporal_resolution" placeholder="Temporal coverage resolution">
+    </div>
+  </div>
+
+    <!--Include output-->
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Output Files Availability? </label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="includes_output" id="includes_output" placeholder="Does the Model Instance resource include output files? 'Yes or No'">
+    </div>
+  </div>
+
+    <!--Model Program resource used for Execution-->
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Execution Resource</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="executed_by" id="executed_by" placeholder="Model Program resource used for execution">
+    </div>
+  </div>
+
+
+  <br>
+
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-primary btn-lg btn-block">Create Resource</button>
+    </div>
+  </div>
+
+</form>
 
 {% endblock %}
