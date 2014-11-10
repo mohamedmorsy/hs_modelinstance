@@ -43,7 +43,7 @@ class ModelInstanceResource(Page, RichText, AbstractResource):
                                           help_text='Yes or No')
     # Model Program used for Execution
     executed_by = models.CharField(verbose_name='Executed by ',null=False,blank=True,default='unknown',max_length=255,
-                                          help_text='Yes or No')
+                                          help_text='Model Program used for execution')
 
     class Meta:
         verbose_name = 'ModelInstance'
