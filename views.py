@@ -25,12 +25,15 @@ class DetailView(generic.DetailView):
     template_name = 'hs_modelinstance/detail.html'
 
 
+
+
 class CreateModelInstanceForm(forms.Form):
     title = forms.CharField(required=True)
     abstract = forms.CharField(required=False, min_length=0)
     creators = forms.CharField(required=False, min_length=0)
     contributors = forms.CharField(required=False, min_length=0)
     keywords = forms.CharField(required=False, min_length=0)
+    includes_output = forms.ChoiceField(choices=(('yes','Yes'), ('no', 'No')))
     # rest_url = forms.URLField(required=False)
     # wsdl_url = forms.URLField(required=False)
     #reference_type = forms.CharField(required=False, min_length=0)
