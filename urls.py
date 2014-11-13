@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from hs_hydroprogram import views
+from hs_modelinstance import views
 
 
 
