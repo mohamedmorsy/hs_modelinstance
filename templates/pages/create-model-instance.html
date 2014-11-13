@@ -116,18 +116,18 @@
     <hr/>
     <br>
 
-  <h3>  Instance Metadata: </h3>
+  <h3>  Model Instance Metadata: </h3>
 
      <!--Input/Output data format-->
-  <div class="form-group">
-    <label for="" class="col-sm-2 control-label">Data Format</label>
-    <div class="col-sm-10">
-        <input type="text" class="form-control" name="data_format" id="data_format"placeholder="Input/Output Data Format">
-    </div>
-  </div>
+  <!--div class="form-group">
+    <!label for="" class="col-sm-2 control-label">Data Format<!/label>
+    <!div class="col-sm-10">
+        <!input type="text" class="form-control" name="data_format" id="data_format"placeholder="Input/Output Data Format">
+    <!/div>
+  <!/div>
 
      <!--Related resources-->
-  <div class="form-group">
+  <!--div class="form-group">
     <label for="" class="col-sm-2 control-label">Related Resources</label>
     <div class="col-sm-10">
         <textarea class="form-control" name="related_resources" id="related_resources" cols="30" rows="10" placeholder="Notes about any resources related to Model Instance (e.g. published papers)"></textarea>
@@ -153,7 +153,7 @@
   </div>
 
      <!--Spatial coverage resolution-->
-  <div class="form-group">
+  <!--div class="form-group">
     <label for="" class="col-sm-2 control-label">Spatial Resolution</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" name="spatial_resolution" id="spatial_resolution" placeholder="Spatial coverage resolution">
@@ -178,7 +178,7 @@
   </div>
 
     <!--Temporal coverage resolution-->
-  <div class="form-group">
+  <!--div class="form-group">
     <label for="" class="col-sm-2 control-label">Temporal Resolution</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" name="temporal_resolution" id="temporal_resolution" placeholder="Temporal coverage resolution">
@@ -187,19 +187,41 @@
 
     <!--Include output-->
   <div class="form-group">
-    <label for="" class="col-sm-2 control-label">Output Files Availability? </label>
+    <label for="" class="col-sm-2 control-label">Output Files Availability?</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" name="includes_output" id="includes_output" placeholder="Does the Model Instance resource include output files? 'Yes or No'">
+      <select class="form-control" id="includes_output" name="includes_output">
+          <option value="None">Please choose...</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+      </select>
+
+    </div>
+      </div>
+
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Output Files Availability?</label>
+    <div class="col-sm-10">
+
+      <label><input type="radio" name="includes_output" id="includes_output" value="yes" /> Yes</label>
+      
+      <label><input type="radio" name="includes_output" id="includes_output" value="no" /> No</label>
+
     </div>
   </div>
 
+
+
     <!--Model Program resource used for Execution-->
   <div class="form-group">
-    <label for="" class="col-sm-2 control-label">Execution Resource</label>
+    <label for="" class="col-sm-2 control-label">Model Program Resource</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" name="executed_by" id="executed_by" placeholder="Model Program resource used for execution">
     </div>
   </div>
+
+
+
+
 
 
   <br>
