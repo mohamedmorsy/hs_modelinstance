@@ -2,7 +2,7 @@
 
 {#{% load geoanalytics_tags mezzanine_tags pages_tags hydroshare_tags staticfiles%}#}
 
-{% load static %}
+{% load geoanalytics_tags mezzanine_tags pages_tags hydroshare_tags staticfiles%}
 
 {% block extra_head %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/upload.css' %}" />
@@ -10,11 +10,15 @@
 
 {% block title %}
 
-    Create a ModelInstance Resource
+    Create a Model Instance Resource
 
 {% endblock %}
 
 {% block main %}
+
+    <h2>Create a Model Instance Resource</h2>
+
+    <br>
 
     <h2>Upload files to create a new Resource:</h2>
 
@@ -29,8 +33,8 @@
             <br>
             Drop files here <br><br><br>
 
-            <input type="file" id="fileBrowse" style="display: none;" />
-            <input type="button" class="btn btn-primary btn-lg" value="Browse for Files" onclick="document.getElementById('fileBrowse').click();" />
+            <input type="file" id="fileBrowse" style="display: none;" multiple="multiple"/>
+            <input type="button" class="btn btn-primary btn-lg" value="Browse for Files" onclick="document.getElementById('fileBrowse').click()" />
         </div>
 
         <div>
@@ -138,19 +142,27 @@
   <div class="form-group">
     <label for="" class="col-sm-2 control-label">Spatial Coverage</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" name="spatial_coverage" id="spatial_coverage" placeholder="The spatial coverage could be point or box format">
-    </div>
-  </div>
+        <label><input type="radio" name="spatial_coverage_type" id="spatial_coverage_type" value="point" /> Point</label>
 
-  <div class="form-group">
+        <label><input type="radio" name="spatial_coverage_type" id="spatial_coverage_type" value="box" /> Box</label>
+    </div>
+    <br>
+    <br>
     <div class="col-sm-offset-2 col-sm-10">
         <p>Note: Apply one of the following formats for spatial coverage: </p>
         <ul>
-          <li>Point: east=-78.425; north=38.1633; elevation=111.252; units=degree; zunits=meter ; projection=NAD83; name=USGS02032640</li>
-          <li>Box: northlimit=39.5; eastlimit=-75.125; southlimit=36.5; westlimit=-83.75; uplimit=1746.199; downlimit=289.56; units=degree; zunits=meter; projection=NAD83; name=State of Virginia</li>
+          <li>Point: "east, north, elevation, units, zunits, projection, name." Example: "-78.425, 38.1633, 111.252, degree, meter, NAD83, USGS02032640"</li>
+          <li>Box: "eastlimit, northlimit, southlimit, westlimit, uplimit, downlimit, units, zunits, projection, name." Example: "-75.125, 39.5, 36.5, -83.75, 1746.199, 289.56, degree, meter, NAD83, State of Virginia"</li>
         </ul>
     </div>
+
+    <div class="col-sm-offset-2 col-sm-10">
+      <input type="text" class="form-control" name="spatial_coverage" id="spatial_coverage" placeholder="Spatial Coverage Data">
+    </div>
   </div>
+
+
+
 
      <!--Spatial coverage resolution-->
   <!--div class="form-group">
@@ -164,7 +176,7 @@
   <div class="form-group">
     <label for="" class="col-sm-2 control-label">Temporal Coverage</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" name="temporal_coverage" id="temporal_coverage" placeholder="Temporal coverage">
+      <input type="text" class="form-control" name="temporal_coverage" id="temporal_coverage" placeholder="Temporal Coverage Data">
     </div>
   </div>
 
@@ -186,7 +198,7 @@
   </div>
 
     <!--Include output-->
-  <div class="form-group">
+  <!--div class="form-group">
     <label for="" class="col-sm-2 control-label">Output Files Availability?</label>
     <div class="col-sm-10">
       <select class="form-control" id="includes_output" name="includes_output">
@@ -196,14 +208,14 @@
       </select>
 
     </div>
-      </div>
+      </div-->
 
   <div class="form-group">
     <label for="" class="col-sm-2 control-label">Output Files Availability?</label>
     <div class="col-sm-10">
 
       <label><input type="radio" name="includes_output" id="includes_output" value="yes" /> Yes</label>
-      
+
       <label><input type="radio" name="includes_output" id="includes_output" value="no" /> No</label>
 
     </div>
@@ -235,4 +247,440 @@
 
 </form>
 
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+
+
+    function deleteRow(r) {
+            $(r).remove();
+    }
+
+    var f = null;
+
+    var myfiles = {};
+
+    $(function() {
+        var fileCount = 1;
+
+
+
+
+
+        $("#add-row").click(function() {
+            fileCount++;
+
+            $("#files").append(
+                '<tr id="file' + fileCount + '">' +
+                    '<td><input class="form-control" type="file" name="file' + fileCount + '"/></td>' +
+                    '<td><button class="btn btn-danger btn-block deleter" onClick=\'deleteRow("#file' + fileCount + '")\'>Delete</button></td>' +
+                '</tr>'
+            );
+            return false;
+        });
+
+
+
+        // ---------------------
+        // Select Files Function
+        //----------------------
+
+
+        $("#fileBrowse").change(function(evt){
+            console.log(evt);
+            console.log(evt.target.files);
+            alert('File Selected');
+
+            // Parse the files
+            files = evt.target.files;
+            for (var i= 0; i<files.length; i++){
+                ParseMetadataFile(files[i]);
+            }
+
+            // Add them to the template
+            handleFileSelect(evt);
+        });
+
+        // Setup the dnd listeners.
+        var dropZone = document.getElementById('drop_zone');
+        dropZone.addEventListener('dragover', handleDragOver, false);
+        dropZone.addEventListener('drop', fileDrop, false);
+
+        var control = document.getElementById('my-files');
+        control.addEventListener("change", function(evt) {
+
+
+
+        // When the control has changed, there are new files
+        var i = 0,
+            files = control.files,
+            len = files.length;
+
+
+        for (; i < len; i++) {
+
+            ext =  files[i].name.split('.').pop();
+            console.log("Filename: " + files[i].name);
+            console.log("Type: " + files[i].type);
+            console.log("Size: " + files[i].size + " bytes");
+            console.log("Extension: " + ext);
+
+            if (ext == 'meta'){
+                console.log('I can parse this file!');
+
+                var f = evt.target.files[i];
+                if (f) {
+                    var r = new FileReader();
+                    r.onload = function(e) {
+	                    var contents = e.target.result;
+{#                        alert( "Got the file.n"#}
+{#                              +"name: " + f.name + "\n"#}
+{#                              +"type: " + f.type + "\n"#}
+{#                              +"size: " + f.size + " bytes \n"#}
+{#                              + contents.substr(1, contents.indexOf("n")));#}
+
+                        // call view to get data
+                        $.ajax({
+                                type:"POST",
+                                url:'/hsapi/_internal/parse-metadata/',
+                                data: { name: f.name,
+                                        size: f.size,
+                                        type: f.type,
+                                        content: contents},
+
+                                success: function(response){
+
+                                    console.log(response);
+
+                                    var data = response['data'];
+
+
+                                    // set field data
+                                    document.getElementById('title').value = data['content']['resource'][0]['title'];
+                                    document.getElementById('abstract').value = data['content']['resource'][0]['abstract'];
+                                    document.getElementById('keywords').value = data['content']['resource'][0]['subject'];
+
+                                    // create breakline object
+                                    var break_line = document.createElement("br");
+
+                                    // add creator fields
+                                    var creators = data['content']['creator'];
+                                    var l = creators.length;
+
+                                    if (l > 0){
+                                        var creator_txt = creators[0]["name"];
+                                        document.getElementById('creators').value = creator_txt;
+                                    }
+                                    for (var i = 1; i < l; i++) {
+{#                                        var creator_txt = creators[i]["name"];#}
+
+                                        {#  Create creator new field         #}
+                                        var f = document.createElement("input");
+                                        f.setAttribute('type',"text");
+                                        f.setAttribute('class',"form-control");
+                                        f.setAttribute('name',"creators");
+                                        f.setAttribute('value',creators[i]["name"]);
+
+
+                                        document.getElementById("creators_group").appendChild(break_line);
+                                        document.getElementById("creators_group").appendChild(f);
+                                        {#  Should this also contain other creator metadata? #}
+                                    }
+
+                                    // add contributor fields
+                                    var contrib = data['content']['contributor'];
+                                    console.log(contrib);
+                                    l = contrib.length;
+                                    console.log(l);
+                                    if (l > 0){
+                                        var contrib_txt = contrib[0]["name"];
+                                        document.getElementById('contributors').value = contrib_txt;
+                                    }
+                                    for (var i = 1; i < l; i++){
+                                        f = document.createElement("input");
+                                        f.setAttribute('type',"text");
+                                        f.setAttribute('class',"form-control");
+                                        f.setAttribute('name',"contributors");
+                                        f.setAttribute('value',contrib[i]["name"]);
+                                        document.getElementById("contributors_group").appendChild(break_line);
+                                        document.getElementById("contributors_group").appendChild(f);
+                                        {#  Should this also contain other creator metadata? #}
+                                    }
+
+
+
+                                    document.getElementById('spatial_coverage').value = data['content']['instance'][0]['spatial_coverage'];
+                                    document.getElementById('temporal_coverage').value = data['content']['instance'][0]['temporal_coverage'];
+                                    document.getElementById('includes_output').value = data['content']['instance'][0]['includes_output'];
+                                    document.getElementById('executed_by').value = data['content']['instance'][0]['executed_by'];
+
+                                },
+                                error: function(response){
+                                    console.log('POST Error');
+                                    console.log(response);
+                                }
+                        });
+                    }
+                    r.readAsText(f);
+
+                } else {
+                    alert("Failed to load file");
+                }
+
+
+            }
+        }
+    }, false);
+
+        function fileDrop(evt){
+
+            // get the files that were dropped
+            evt.stopPropagation();
+            evt.preventDefault();
+
+            var files = evt.dataTransfer.files; // FileList object.
+
+            // Parse the files
+{#            files = evt.target.files;#}
+            console.log(files[i]);
+            for (var i= 0; i<files.length; i++){
+
+                ParseMetadataFile(files[i]);
+            }
+
+            // Add them to the template
+{#            handleFileSelect(evt);#}
+            createFileElement(files[0]);
+        }
+
+
+        function createFileElement(f){
+
+            // save this file
+            myfiles[f.name] = f;
+
+            // create a select list
+            var selections = ['spatial coverage','temporal coverage','includes output','executed by','other'];
+            var select_list = document.createElement('select');
+            select_list.id = 'mySelect';
+            for (var i =0; i < selections.length; i++){
+                var option = document.createElement('option');
+                option.value = selections[i];
+                option.text = selections[i];
+                select_list.appendChild(option);
+            }
+
+            // add new fields for each file
+//            var filelist = document.getElementById('filelist');
+//
+//            var li = document.createElement("li");
+//            var value = [];
+//            value.push('<strong>', f.name, '</strong> (', f.type || 'n/a', ') - ',
+//                            f.size, ' bytes, last modified: ',
+//                          f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+//                          '</li>');
+//            li.innerHTML = value.join('');
+//            console.log(li);
+//
+//            // create breakline object
+//            var break_line = document.createElement("br");
+//
+//            filelist.appendChild(break_line);
+//            filelist.appendChild(li);
+
+            var table = document.getElementById('uploaded_files_table');
+            var row = table.insertRow(table.rows.length);
+
+
+            var text = document.createTextNode(f.name);
+            //var element.appendChild(select_list);
+
+            var cell_filename = row.insertCell(0);
+            cell_filename.style.paddingLeft = '10px';
+            cell_filename.style.paddingRight = '10px';
+            cell_filename.style.fontWeight = 'bold';
+            cell_filename.appendChild(text);
+
+            var cell_type = row.insertCell(1);
+            cell_type.style.paddingLeft = '10px';
+            cell_type.style.paddingRight = '10px';
+            var type = f.type || 'n/a';
+            cell_type.appendChild(document.createTextNode( 'type: ' + type));
+
+            var cell_size = row.insertCell(2);
+            cell_size.style.paddingLeft = '10px';
+            cell_size.style.paddingRight = '10px';
+            cell_size.appendChild(document.createTextNode( 'size: ' + f.size + ' bytes'));
+
+            var cell_date = row.insertCell(3);
+            cell_date.style.paddingLeft = '10px';
+            cell_date.style.paddingRight = '10px';
+            var date = f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a';
+            cell_date.appendChild(document.createTextNode( 'last modified: ' +date));
+
+            var cell_list = row.insertCell(4);
+            cell_list.appendChild(select_list);
+
+
+        }
+
+        function handleFileSelect(evt) {
+
+
+            evt.stopPropagation();
+            evt.preventDefault();
+
+            var files = evt.dataTransfer.files; // FileList object.
+
+            // files is a FileList of File objects. List some properties.
+            var output = [];
+            for (var i = 0, f; f = files[i]; i++) {
+              output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                          f.size, ' bytes, last modified: ',
+                          f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                          '</li>');
+            }
+            document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+          }
+
+          function handleDragOver(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+            evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+        }
+
+
+        $("eula_selector").change(function(){
+{#        eula_selector.addEventListener("change", function(evt) {#}
+
+
+            // get selected value
+            var selected_name = this.options[this.selectedIndex].value;
+            console.log(selected_name);
+
+
+            eula.value = selected_name;
+
+
+
+
+}, false);
+    });
+
+
+        function ParseMetadataFile(f) {
+
+
+
+            ext =  f.name.split('.').pop();
+            console.log("Filename: " + f.name);
+            console.log("Type: " + f.type);
+            console.log("Size: " + f.size + " bytes");
+            console.log("Extension: " + ext);
+
+            if (ext == 'meta'){
+                console.log('I can parse this file!');
+
+                if (f) {
+                    var r = new FileReader();
+                    r.onload = function(e) {
+	                    var contents = e.target.result;
+
+                        $.ajax({
+                                type:"POST",
+                                url:'/hsapi/_internal/parse-metadata/',
+                                data: { name: f.name,
+                                        size: f.size,
+                                        type: f.type,
+                                        content: contents},
+
+                                success: function(response){
+
+                                    console.log(response);
+
+                                    var data = response['data'];
+
+
+                                    // set field data
+                                    document.getElementById('title').value = data['content']['resource'][0]['title'];
+                                    document.getElementById('abstract').value = data['content']['resource'][0]['abstract'];
+                                    document.getElementById('keywords').value = data['content']['resource'][0]['subject'];
+
+                                    // create breakline object
+                                    var break_line = document.createElement("br");
+
+                                    // add creator fields
+                                    var creators = data['content']['creator'];
+                                    var l = creators.length;
+
+                                    if (l > 0){
+                                        var creator_txt = creators[0]["name"];
+                                        document.getElementById('creators').value = creator_txt;
+                                    }
+                                    for (var i = 1; i < l; i++) {
+{#                                        var creator_txt = creators[i]["name"];#}
+
+                                        {#  Create creator new field         #}
+                                        var f = document.createElement("input");
+                                        f.setAttribute('type',"text");
+                                        f.setAttribute('class',"form-control");
+                                        f.setAttribute('name',"creators");
+                                        f.setAttribute('value',creators[i]["name"]);
+
+
+                                        document.getElementById("creators_group").appendChild(break_line);
+                                        document.getElementById("creators_group").appendChild(f);
+                                        {#  Should this also contain other creator metadata? #}
+                                    }
+
+                                    // add contributor fields
+                                    var contrib = data['content']['contributor'];
+                                    console.log(contrib);
+                                    l = contrib.length;
+                                    console.log(l);
+                                    if (l > 0){
+                                        var contrib_txt = contrib[0]["name"];
+                                        document.getElementById('contributors').value = contrib_txt;
+                                    }
+                                    for (var i = 1; i < l; i++){
+                                        f = document.createElement("input");
+                                        f.setAttribute('type',"text");
+                                        f.setAttribute('class',"form-control");
+                                        f.setAttribute('name',"contributors");
+                                        f.setAttribute('value',contrib[i]["name"]);
+                                        document.getElementById("contributors_group").appendChild(break_line);
+                                        document.getElementById("contributors_group").appendChild(f);
+                                        {#  Should this also contain other creator metadata? #}
+                                    }
+
+
+
+
+                                    document.getElementById('spatial_coverage').value = data['content']['instance'][0]['spatial_coverage'];
+                                    document.getElementById('temporal_coverage').value = data['content']['instance'][0]['temporal_coverage'];
+                                    document.getElementById('includes_output').value = data['content']['instance'][0]['includes_output'];
+                                    document.getElementById('executed_by').value = data['content']['instance'][0]['executed_by'];
+
+
+                                },
+                                error: function(response){
+                                    console.log('POST Error');
+                                    console.log(response);
+                                }
+                        });
+                    }
+                    r.readAsText(f);
+
+                } else {
+                    alert("Failed to load file");
+                }
+
+
+            }
+        }
+
+
+
+    </script>
 {% endblock %}
