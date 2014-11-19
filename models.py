@@ -3,7 +3,8 @@ from django.contrib.auth.models import User, Group
 from django.db import models
 from mezzanine.pages.models import Page, RichText
 from mezzanine.core.models import Ownable
-from hs_core.models import AbstractResource
+from hs_core.models import AbstractResource, resource_processor
+from mezzanine.pages.page_processors import processor_for
 import datetime as dt
 #Models.py is used to create the new tables and attributes in the database
 # To create a new resource, use these three super-classes. 
@@ -20,24 +21,24 @@ class ModelInstanceResource(Page, RichText, AbstractResource):
 ### Model Instance attributes ###
 ################################
 
-    # Input/Output data format
+    # Input/Output data format (to be removed)
     #data_format = models.CharField(verbose_name='Data Format ',null=False,blank=True,default='Zip files',max_length=255,
-    #                                     help_text='The Input and Output data format')
-    # Related resources
+                                        # help_text='The Input and Output data format')
+    # Related resources (to be removed)
     #related_resources = models.TextField(verbose_name="Related Resources", null=False,default="",
-    #                                  help_text="Notes about any resources related to Model Instance (e.g. published papers)")
+                                    # help_text="Notes about any resources related to Model Instance (e.g. published papers)")
     # Spatial coverage
     spatial_coverage = models.CharField(verbose_name='Spatial Coverage ',null=False,blank=True,default='unknown',max_length=255,
                                           help_text='The spatial coverage. Maybe it is a point or box ')
-    # Spatial coverage resolution
+    # Spatial coverage resolution (to be removed)
     #spatial_resolution = models.CharField(verbose_name='Spatial Coverage Resolution ',null=False,blank=True,default='unknown',max_length=255,
-    #                                      help_text='The spatial coverage resolution')
+                                          #help_text='The spatial coverage resolution')
     # Temporal coverage
     temporal_coverage = models.CharField(verbose_name='Temporal Coverage ',null=False,blank=True,default='unknown',max_length=255,
                                           help_text='The Temporal coverage')
-    # Temporal coverage resolution
+    # Temporal coverage resolution (to be removed)
     #temporal_resolution = models.CharField(verbose_name='Temporal Coverage Resolution ',null=False,blank=True,default='unknown',max_length=255,
-    #                                      help_text='The spatial coverage resolution')
+                                         # help_text='The spatial coverage resolution')
     # Include output
     includes_output = models.CharField(verbose_name='Does the Model Instance include output files? ',null=False,blank=True,default=None,max_length=255,
                                           help_text='Yes or No')
@@ -47,3 +48,5 @@ class ModelInstanceResource(Page, RichText, AbstractResource):
 
     class Meta:
         verbose_name = 'ModelInstance'
+
+processor_for(ModelInstanceResource)(resource_processor)
