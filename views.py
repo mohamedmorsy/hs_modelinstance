@@ -52,7 +52,7 @@ class CreateModelInstanceForm(forms.Form):
 
 @login_required
 def create_model_instance(request, *args, **kwargs):
-    frm = CreateModelInstanceForm(request.POST)
+    frm = CreateModelInstanceForm(request.PO "ST)
     if frm.is_valid():
         dcterms = [
             { 'term': 'T', 'content': frm.cleaned_data['title']},
@@ -74,6 +74,17 @@ def create_model_instance(request, *args, **kwargs):
         includes_output = frm.cleaned_data["includes_output"]
         executed_by = frm.cleaned_data["executed_by"]
 
+        #dcterms.append({'term':'CVR','content':spatial_coverage})
+        #dcterms.append({'term':'CVR','content':temporal_coverage})
+        mterms = []
+        if spatial_coverage_type == 'box':
+            val = ({'name':'Spatial Coverage','northlimit':'', 'eastlimit':'', 'southlimit':'', 'westlimit':''})
+            mterms.append({'coverage':{'type' :'box', 'value' : val}})
+        elif spatial_coverage_type =='point':
+            val = ({'name':'Spatial Coverage', 'east':'', 'north':''})
+            mterms.append({'coverage':{'type' :'point', 'value':val}})
+        val=  ({'name':'Temporal Coverage', 'start':'', 'end':''})
+        mterms.append({'coverage':{'type' :'period', 'value':val}})
 
         res = hydroshare.create_resource(
             resource_type='ModelInstanceResource',
@@ -82,11 +93,13 @@ def create_model_instance(request, *args, **kwargs):
             keywords=[k.strip() for k in frm.cleaned_data['keywords'].split(',')] if frm.cleaned_data['keywords'] else None,
             dublin_metadata=dcterms,
             content=frm.cleaned_data['abstract'] or frm.cleaned_data['title'],
+            metadata = mterms,
             #spatial_coverage_type = spatial_coverage_type,
             spatial_coverage=spatial_coverage,
             temporal_coverage=temporal_coverage,
             includes_output=includes_output,
-            executed_by=executed_by
+            executed_by=executed_by,
+            files=request.FILES.getlist('files')
         )
         return HttpResponseRedirect(res.get_absolute_url())
 
@@ -104,12 +117,13 @@ def add_dublin_core(request, page):
         abstract = cm.dublin_metadata.filter(term='AB').first().content
     except:
         abstract = None
-
+    coverages = cm.metadata.coverages.all()
     return {
         'dublin_core': [t for t in cm.dublin_metadata.all().exclude(term='AB').exclude(term='DM').exclude(term='DC').exclude(term='DTS').exclude(term='T')],
         'abstract': abstract,
         'short_id': cm.short_id,
         'resource_type': cm._meta.verbose_name,
+        'coverages': coverages,
         'spatial_coverage': cm.spatial_coverage,
         'temporal_coverage': cm.temporal_coverage,
         'includes_output': cm.includes_output,
