@@ -21,24 +21,12 @@ class ModelInstanceResource(Page, RichText, AbstractResource):
 ### Model Instance attributes ###
 ################################
 
-    # Input/Output data format (to be removed)
-    #data_format = models.CharField(verbose_name='Data Format ',null=False,blank=True,default='Zip files',max_length=255,
-                                        # help_text='The Input and Output data format')
-    # Related resources (to be removed)
-    #related_resources = models.TextField(verbose_name="Related Resources", null=False,default="",
-                                    # help_text="Notes about any resources related to Model Instance (e.g. published papers)")
     # Spatial coverage
     spatial_coverage = models.CharField(verbose_name='Spatial Coverage ',null=False,blank=True,default='unknown',max_length=255,
                                           help_text='The spatial coverage. Maybe it is a point or box ')
-    # Spatial coverage resolution (to be removed)
-    #spatial_resolution = models.CharField(verbose_name='Spatial Coverage Resolution ',null=False,blank=True,default='unknown',max_length=255,
-                                          #help_text='The spatial coverage resolution')
     # Temporal coverage
     temporal_coverage = models.CharField(verbose_name='Temporal Coverage ',null=False,blank=True,default='unknown',max_length=255,
                                           help_text='The Temporal coverage')
-    # Temporal coverage resolution (to be removed)
-    #temporal_resolution = models.CharField(verbose_name='Temporal Coverage Resolution ',null=False,blank=True,default='unknown',max_length=255,
-                                         # help_text='The spatial coverage resolution')
     # Include output
     includes_output = models.CharField(verbose_name='Does the Model Instance include output files? ',null=False,blank=True,default=None,max_length=255,
                                           help_text='Yes or No')

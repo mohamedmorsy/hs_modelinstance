@@ -43,7 +43,6 @@ class CreateModelInstanceForm(forms.Form):
     creators = forms.CharField(required=False, min_length=0)
     contributors = forms.CharField(required=False, min_length=0)
     keywords = forms.CharField(required=False, min_length=0)
-    #includes_output = forms.ChoiceField(choices=(('yes','Yes'), ('no', 'No')))
     spatial_coverage_type = forms.CharField(required=False, min_length=0)
     spatial_coverage = forms.CharField(required=False, min_length=0)
     temporal_coverage = forms.CharField(required=False, min_length=0)
@@ -52,7 +51,7 @@ class CreateModelInstanceForm(forms.Form):
 
 @login_required
 def create_model_instance(request, *args, **kwargs):
-    frm = CreateModelInstanceForm(request.PO "ST)
+    frm = CreateModelInstanceForm(request.POST)
     if frm.is_valid():
         dcterms = [
             { 'term': 'T', 'content': frm.cleaned_data['title']},
@@ -74,8 +73,7 @@ def create_model_instance(request, *args, **kwargs):
         includes_output = frm.cleaned_data["includes_output"]
         executed_by = frm.cleaned_data["executed_by"]
 
-        #dcterms.append({'term':'CVR','content':spatial_coverage})
-        #dcterms.append({'term':'CVR','content':temporal_coverage})
+
         mterms = []
         if spatial_coverage_type == 'box':
             val = ({'name':'Spatial Coverage','northlimit':'', 'eastlimit':'', 'southlimit':'', 'westlimit':''})
@@ -94,7 +92,6 @@ def create_model_instance(request, *args, **kwargs):
             dublin_metadata=dcterms,
             content=frm.cleaned_data['abstract'] or frm.cleaned_data['title'],
             metadata = mterms,
-            #spatial_coverage_type = spatial_coverage_type,
             spatial_coverage=spatial_coverage,
             temporal_coverage=temporal_coverage,
             includes_output=includes_output,
