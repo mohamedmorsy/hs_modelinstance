@@ -139,8 +139,10 @@
     <div class="col-sm-offset-2 col-sm-10">
         <p>Note: Apply one of the following formats for spatial coverage: </p>
         <ul>
-          <li>Point: "east, north, elevation, units, zunits, projection, name." Example: "-78.425, 38.1633, 111.252, degree, meter, NAD83, USGS02032640"</li>
-          <li>Box: "eastlimit, northlimit, southlimit, westlimit, uplimit, downlimit, units, zunits, projection, name." Example: "-75.125, 39.5, 36.5, -83.75, 1746.199, 289.56, degree, meter, NAD83, State of Virginia"</li>
+          <li>Point: "Name for the place, East, North, Elevation, Units, Zunits, Projection."
+              <br> Example: "USGS02032640, -78.425, 38.1633, 111.252, degree, meter, NAD83"</li>
+          <li>Box: "Name for the place, Northlimit, Eastlimit, Southlimit, Westlimit, Uplimit, Downlimit, Units, Zunits, Projection."
+              <br> Example: "State of Virginia, 39.5, -75.125, 36.5, -83.75, 1746.199, 289.56, degree, meter, NAD83"</li>
         </ul>
     </div>
 
@@ -150,19 +152,21 @@
   </div>
 
     <!--Temporal coverage-->
+
   <div class="form-group">
     <label for="" class="col-sm-2 control-label">Temporal Coverage</label>
-    <div class="col-sm-10">
-      <input type="text" class="form-control" name="temporal_coverage" id="temporal_coverage" placeholder="Temporal Coverage Data">
+    <div class="col-sm-offset-2 col-sm-10">
+        <p>Note: Apply the following format for temporal coverage: </p>
+        <ul>
+          <li>Name for the time interval, Starting date, Ending date<br>
+          Example:"Summer Season, 2014-06-15T14:20-05:00, 2014-09-15T14:20-05:00"</li>
+        </ul>
     </div>
   </div>
 
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
-        <p>Note: Apply the following format for temporal coverage: </p>
-        <ul>
-          <li>Starting date, Ending date, Time step</li>
-        </ul>
+      <input type="text" class="form-control" name="temporal_coverage" id="temporal_coverage" placeholder="Temporal Coverage Data">
     </div>
   </div>
 

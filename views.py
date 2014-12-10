@@ -27,7 +27,7 @@ from lxml import etree
 from StringIO import StringIO
 import datetime
 from django.utils.timezone import now
-
+import dateutil.parser
 
 
 class DetailView(generic.DetailView):
@@ -68,20 +68,33 @@ def create_model_instance(request, *args, **kwargs):
             dcterms.append({'term' : 'CN', 'content' : cn})
 
         spatial_coverage_type = frm.cleaned_data["spatial_coverage_type"]
-        spatial_coverage = frm.cleaned_data["spatial_coverage"]
-        temporal_coverage = frm.cleaned_data["temporal_coverage"]
+        spatial_coverage = frm.cleaned_data["spatial_coverage"].split(',')
+        temporal_coverage = frm.cleaned_data["temporal_coverage"].split(',')
         includes_output = frm.cleaned_data["includes_output"]
         executed_by = frm.cleaned_data["executed_by"]
 
 
         mterms = []
         if spatial_coverage_type == 'box':
-            val = ({'name':'Spatial Coverage','northlimit':'', 'eastlimit':'', 'southlimit':'', 'westlimit':''})
+            name = spatial_coverage[0]
+            northlimit = spatial_coverage[1]
+            eastlimit = spatial_coverage[2]
+            southlimit = spatial_coverage[3]
+            westlimit = spatial_coverage[4]
+            val = ({'name':name,'northlimit':northlimit, 'eastlimit':eastlimit, 'southlimit':southlimit, 'westlimit':westlimit})
             mterms.append({'coverage':{'type' :'box', 'value' : val}})
         elif spatial_coverage_type =='point':
-            val = ({'name':'Spatial Coverage', 'east':'', 'north':''})
+            name = spatial_coverage[0]
+            east = spatial_coverage[1]
+            north = spatial_coverage[2]
+            val = ({'name':name, 'east':east, 'north':north})
             mterms.append({'coverage':{'type' :'point', 'value':val}})
-        val=  ({'name':'Temporal Coverage', 'start':'', 'end':''})
+        name = temporal_coverage[0]
+        start_txt = temporal_coverage[1]
+        end_txt = temporal_coverage[2]
+        start = dateutil.parser.parse(start_txt)
+        end = dateutil.parser.parse(end_txt)
+        val=  ({'name':name, 'start':start_txt, 'end':end_txt})
         mterms.append({'coverage':{'type' :'period', 'value':val}})
 
         res = hydroshare.create_resource(
