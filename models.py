@@ -91,10 +91,10 @@ class ModelInstanceResource(Page, RichText, AbstractResource):
         verbose_name = 'Model Instance Resource'
 
 
-    @property
-    def metadata(self):
-        md = ModelInstanceMetaData()
-        return self._get_metadata(md)
+    #@property
+    #def metadata(self):
+        #md = ModelInstanceMetaData()
+        #return self._get_metadata(md)
 
 processor_for(ModelInstanceResource)(resource_processor)
 
