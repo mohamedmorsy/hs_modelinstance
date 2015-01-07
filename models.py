@@ -136,13 +136,13 @@ class ModelInstanceMetaData(CoreMetaData):
         # get root 'Description' element that contains all other elements
         container = RDF_ROOT.find('rdf:Description', namespaces=self.NAMESPACES)
 
-        if self.modeloutput:
+        if self.model_output:
             hsterms_modeloutput = etree.SubElement(container, '{%s}variable' % self.NAMESPACES['hsterms'])
             hsterms_modeloutput_rdf_Description = etree.SubElement(hsterms_modeloutput, '{%s}Description' % self.NAMESPACES['rdf'])
             hsterms_modeloutput_value = etree.SubElement(hsterms_modeloutput_rdf_Description, '{%s}ModelOutputValue' % self.NAMESPACES['hsterms'])
             hsterms_modeloutput_value.text = self.modeloutput.includes_output
 
-        if self.executedby:
+        if self.executed_by:
             hsterms_executedby = etree.SubElement(container, '{%s}variable' % self.NAMESPACES['hsterms'])
             hsterms_executedby_rdf_Description = etree.SubElement(hsterms_executedby, '{%s}Description' % self.NAMESPACES['rdf'])
             hsterms_executedby_name = etree.SubElement(hsterms_executedby_rdf_Description, '{%s}ModelProgramName' % self.NAMESPACES['hsterms'])

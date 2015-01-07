@@ -81,13 +81,22 @@ def create_model_instance(request, *args, **kwargs):
             eastlimit = spatial_coverage[2]
             southlimit = spatial_coverage[3]
             westlimit = spatial_coverage[4]
-            val = ({'name':name,'northlimit':northlimit, 'eastlimit':eastlimit, 'southlimit':southlimit, 'westlimit':westlimit})
+            uplimit = spatial_coverage[5]
+            downlimit = spatial_coverage[6]
+            units = spatial_coverage[7]
+            zunits = spatial_coverage[8]
+            projection = spatial_coverage[9]
+            val = ({'name':name,'northlimit':northlimit, 'eastlimit':eastlimit, 'southlimit':southlimit, 'westlimit':westlimit, 'units':units, 'uplimit':uplimit, 'downlimit':downlimit, 'zunits':zunits, 'projection':projection})
             mterms.append({'coverage':{'type' :'box', 'value' : val}})
         elif spatial_coverage_type =='point':
             name = spatial_coverage[0]
             east = spatial_coverage[1]
             north = spatial_coverage[2]
-            val = ({'name':name, 'east':east, 'north':north})
+            elevation = spatial_coverage[3]
+            units = spatial_coverage[4]
+            zunits = spatial_coverage[5]
+            projection = spatial_coverage[6]
+            val = ({'name':name, 'east':east, 'north':north, 'elevation':elevation, 'units':units, 'zunits':zunits, 'projection':projection})
             mterms.append({'coverage':{'type' :'point', 'value':val}})
         name = temporal_coverage[0]
         start_txt = temporal_coverage[1]
