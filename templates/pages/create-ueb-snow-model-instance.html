@@ -201,6 +201,109 @@
  <br>
 
  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Time Step</label>
+    <div class="col-sm-10">
+
+      <input type="text" class="form-control" name="model_time_step" id="model_time_step" placeholder="time step used for modeling">
+
+    </div>
+ </div>
+
+ <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Output Variables</label>
+    <div class="col-sm-10">
+
+      <input type="text" class="form-control" name="output_variables" id="output_variables" placeholder="For example: total outflow (m/hr), total outflow from snow melt (m/hr), outflow from rain (m/hr)">
+
+    </div>
+ </div>
+
+
+ <br>
+
+ <h4>  Spatial Resolution </h4>
+
+ <div class="form-group">
+   <label for="" class="col-sm-2 control-label"> Number of Rows</label>
+   <div class="col-sm-10">
+     <input type="number" class="form-control" name="number_rows" id="number_rows" placeholder="Number of rows">
+   </div>
+ </div>
+
+ <div class="form-group">
+   <label for="" class="col-sm-2 control-label"> Number of Columns</label>
+   <div class="col-sm-10">
+     <input type="number" class="form-control" name="number_columns" id="number_columns" placeholder="Number of columns">
+   </div>
+ </div>
+
+ <div class="form-group">
+   <label for="" class="col-sm-2 control-label"> Number of Active Cells</label>
+   <div class="col-sm-10">
+     <input type="number" class="form-control" name="number_active_cells" id="number_active_cells" placeholder="Number of active cells">
+   </div>
+ </div>
+
+ <br>
+
+ <h4>  Model Parameters </h4>
+
+ <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Radiation Control</label>
+    <div class="col-sm-10">
+
+      <label><input type="radio" name="radiation_control" id="radiation_control" value="from ta" />From ta</label>
+
+      <label><input type="radio" name="radiation_control" id="radiation_control" value="input qsi" />Input qsi</label>
+
+      <label><input type="radio" name="radiation_control" id="radiation_control" value="input qsi and qli" />Input qsi and qli</label>
+
+      <label><input type="radio" name="radiation_control" id="radiation_control" value="input qnet" />Input qnet</label>
+
+    </div>
+
+    <div class="form-group">
+    <label for="" class="col-sm-2 control-label">Albedo Reading Control</label>
+    <div class="col-sm-10">
+
+      <label><input type="radio" name="albedo_control" id="albedo_control" value="computed" />Albedo is computed internally</label>
+
+      <label><input type="radio" name="albedo_control" id="albedo_control" value="read" />Albedo is read</label>
+
+    </div>
+
+  <br>
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-primary btn-lg btn-block">Create Resource</button>
+    </div>
+  </div>
+
+</form>
+
+{% endblock %}
+
+
+<h4>  State Variables </h4>
+
+ <div class="form-group">
+   <label for="" class="col-sm-2 control-label"> Energy Content (U)</label>
+   <div class="col-sm-10">
+     <input type="text" class="form-control" name="energy_content" id="energy_content" placeholder="Energy content">
+   </div>
+ </div>
+
+ <div class="form-group">
+   <label for="" class="col-sm-2 control-label"> Water Equivalence (W)</label>
+   <div class="col-sm-10">
+     <input type="text" class="form-control" name="water_equivalence" id="water_equivalence" placeholder="Water equivalence">
+   </div>
+ </div>
+
+<br>
+
+<div class="form-group">
     <label for="" class="col-sm-2 control-label">Model Options</label>
     <div class="col-sm-10">
 
@@ -224,21 +327,7 @@
  </div>
  </div>
 
- <h4>  State Variables </h4>
 
- <div class="form-group">
-   <label for="" class="col-sm-2 control-label"> Energy Content (U)</label>
-   <div class="col-sm-10">
-     <input type="text" class="form-control" name="energy_content" id="energy_content" placeholder="Energy content">
-   </div>
- </div>
-
- <div class="form-group">
-   <label for="" class="col-sm-2 control-label"> Water Equivalence (W)</label>
-   <div class="col-sm-10">
-     <input type="text" class="form-control" name="water_equivalence" id="water_equivalence" placeholder="Water equivalence">
-   </div>
- </div>
 
  <br>
 
@@ -293,15 +382,4 @@
    </div>
  </div>
 
-  <br>
 
-
-  <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-primary btn-lg btn-block">Create Resource</button>
-    </div>
-  </div>
-
-</form>
-
-{% endblock %}
